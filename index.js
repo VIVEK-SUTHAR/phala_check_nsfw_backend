@@ -28,6 +28,7 @@ async function checkNSFW(req, res) {
     const model = await nsfw.load();
 
     const predictions = await model.classify(tfImage);
+    console.log(predictions);
 
     const isNSFW = checkPredections(predictions[0].className);
 
@@ -38,7 +39,10 @@ async function checkNSFW(req, res) {
       .status(500)
       .json({ error: "An error occurred while processing the image" });
   } finally {
-    fs.unlinkSync("temp.png");
+    const exists = fs.existsSync("temp.png");
+    if (exists) {
+      fs.unlinkSync("temp.png");
+    }
   }
 }
 
